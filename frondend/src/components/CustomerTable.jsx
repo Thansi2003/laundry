@@ -1,3 +1,5 @@
+import { Trash2 } from 'lucide-react'
+
 function formatDate(value) {
 	if (!value) return '—'
 	const date = new Date(value)
@@ -23,6 +25,7 @@ function getCustomerName(customer) {
 function CustomerTable({
 	customers = [],
 	emptyMessage = 'No customer information is available yet.',
+	onDelete,
 }) {
 	const customerList = Array.isArray(customers) ? customers : []
 
@@ -38,6 +41,7 @@ function CustomerTable({
 							<th className="px-5 py-4" scope="col">Phone</th>
 							<th className="px-5 py-4" scope="col">Address</th>
 							<th className="px-5 py-4" scope="col">Joined</th>
+							<th className="px-5 py-4 text-right" scope="col">Actions</th>
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-slate-100">
@@ -45,7 +49,7 @@ function CustomerTable({
 							<tr>
 								<td
 									className="px-5 py-14 text-center text-sm text-slate-500"
-									colSpan={5}
+									colSpan={6}
 								>
 									{emptyMessage}
 								</td>
@@ -75,6 +79,17 @@ function CustomerTable({
 										<td className="px-5 py-4">{address}</td>
 										<td className="whitespace-nowrap px-5 py-4">
 											{formatDate(customer.createdAt ?? customer.joinedAt)}
+										</td>
+										<td className="whitespace-nowrap px-5 py-4 text-right">
+											<button
+												className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 px-2.5 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700"
+												type="button"
+												onClick={() => onDelete?.(customer)}
+												aria-label={`Delete ${getCustomerName(customer)}`}
+											>
+												<Trash2 size={14} aria-hidden="true" />
+												Delete
+											</button>
 										</td>
 									</tr>
 								)

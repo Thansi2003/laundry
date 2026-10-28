@@ -195,6 +195,23 @@ app.get('/api/customers', async (request, response, next) => {
 	}
 })
 
+app.delete('/api/customers/:id', async (request, response, next) => {
+	try {
+		if (!mongoose.isValidObjectId(request.params.id)) {
+			return response.status(400).json({ message: 'Please provide a valid customer ID.' })
+		}
+
+		const customer = await Customer.findByIdAndDelete(request.params.id)
+		if (!customer) {
+			return response.status(404).json({ message: 'Customer not found.' })
+		}
+
+		return response.json({ message: 'Customer deleted.' })
+	} catch (error) {
+		return next(error)
+	}
+})
+
 app.use((error, request, response, next) => {
 	console.error('API request failed:', error)
 	if (response.headersSent) return next(error)

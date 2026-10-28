@@ -9,6 +9,7 @@ function Customers({ searchTerm }) {
 	const [customers, setCustomers] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState('')
+	const [notice, setNotice] = useState('')
 	const [pagination, setPagination] = useState({ page: 1, searchTerm })
 	const currentPage = pagination.searchTerm === searchTerm ? pagination.page : 1
 
@@ -44,6 +45,33 @@ function Customers({ searchTerm }) {
 		visiblePage * pageSize,
 	)
 
+	async function deleteCustomer(customer) {
+		const id = customer._id ?? customer.id
+		const name = customer.name || customer.fullName || 'this customer'
+		if (!id) {
+			setError('This customer cannot be deleted because it has no valid ID.')
+			return
+		}
+		if (!window.confirm(`Delete ${name} from the customer list? Existing orders will remain.`)) {
+			return
+		}
+
+		setError('')
+		setNotice('')
+		try {
+			await api.delete(`/api/customers/${id}`)
+			setCustomers((currentCustomers) =>
+				currentCustomers.filter((item) => (item._id ?? item.id) !== id),
+			)
+			setNotice(`${name} was removed from the customer list.`)
+		} catch (requestError) {
+			setError(
+				requestError.response?.data?.message ||
+					'Could not delete the customer. Check that the backend and MongoDB are running.',
+			)
+		}
+	}
+
 	return (
 		<main className="min-w-0 flex-1 bg-slate-50 p-6 sm:p-8">
 			<div className="mx-auto max-w-7xl">
@@ -69,6 +97,11 @@ function Customers({ searchTerm }) {
 						{error}
 					</p>
 				)}
+				{notice && (
+					<p className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status">
+						{notice}
+					</p>
+				)}
 				{loading ? (
 					<p className="rounded-xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500" role="status">
 						Loading customers…
@@ -76,6 +109,7 @@ function Customers({ searchTerm }) {
 				) : (
 					<CustomerTable
 						customers={visibleCustomers}
+						onDelete={deleteCustomer}
 						emptyMessage={
 							searchTerm
 								? 'No customers match your search.'
