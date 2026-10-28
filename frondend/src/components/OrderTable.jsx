@@ -1,3 +1,4 @@
+import { Pencil, Trash2 } from 'lucide-react'
 import StatuseBadge from './StatuseBadge'
 
 function getCustomerName(order) {
@@ -40,6 +41,8 @@ function formatAmount(value) {
 function OrderTable({
 	orders = [],
 	emptyMessage = 'No laundry orders to display yet.',
+	onEdit,
+	onDelete,
 }) {
 	const orderList = Array.isArray(orders) ? orders : []
 
@@ -57,6 +60,7 @@ function OrderTable({
 							<th className="px-5 py-4" scope="col">Due date</th>
 							<th className="px-5 py-4 text-right" scope="col">Total</th>
 							<th className="px-5 py-4" scope="col">Status</th>
+							<th className="px-5 py-4 text-right" scope="col">Actions</th>
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-slate-100">
@@ -64,7 +68,7 @@ function OrderTable({
 							<tr>
 								<td
 									className="px-5 py-14 text-center text-sm text-slate-500"
-									colSpan={7}
+									colSpan={8}
 								>
 									{emptyMessage}
 								</td>
@@ -103,6 +107,28 @@ function OrderTable({
 										</td>
 										<td className="whitespace-nowrap px-5 py-4">
 											<StatuseBadge status={status} />
+										</td>
+										<td className="whitespace-nowrap px-5 py-4 text-right">
+											<div className="inline-flex items-center gap-2">
+												<button
+													className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:border-teal-300 hover:bg-teal-50 hover:text-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+													type="button"
+													onClick={() => onEdit?.(order)}
+													aria-label={`Edit order ${id ?? index + 1}`}
+												>
+													<Pencil size={14} aria-hidden="true" />
+													Edit
+												</button>
+												<button
+													className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 px-2.5 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700"
+													type="button"
+													onClick={() => onDelete?.(order)}
+													aria-label={`Delete order ${id ?? index + 1}`}
+												>
+													<Trash2 size={14} aria-hidden="true" />
+													Delete
+												</button>
+											</div>
 										</td>
 									</tr>
 								)

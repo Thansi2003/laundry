@@ -48,6 +48,78 @@ app.get('/api/orders', async (request, response, next) => {
 	}
 })
 
+app.put('/api/orders/:id', async (request, response, next) => {
+	try {
+		if (!mongoose.isValidObjectId(request.params.id)) {
+			return response.status(400).json({ message: 'Please provide a valid order ID.' })
+		}
+
+		const { customerName, phone = '', email = '', service, receivedAt, dueAt, total, status } =
+			request.body
+		const parsedReceivedAt = new Date(receivedAt)
+		const parsedDueAt = new Date(dueAt)
+		const parsedTotal = Number(total)
+		const allowedStatuses = ['Pending', 'In Progress', 'Ready', 'Completed', 'Cancelled']
+
+		if (
+			typeof customerName !== 'string' ||
+			!customerName.trim() ||
+			typeof service !== 'string' ||
+			!service.trim() ||
+			!receivedAt ||
+			!dueAt ||
+			Number.isNaN(parsedReceivedAt.getTime()) ||
+			Number.isNaN(parsedDueAt.getTime()) ||
+			parsedDueAt < parsedReceivedAt ||
+			!Number.isFinite(parsedTotal) ||
+			parsedTotal < 0 ||
+			!allowedStatuses.includes(status)
+		) {
+			return response.status(400).json({ message: 'Please provide valid order details.' })
+		}
+
+		const order = await Order.findByIdAndUpdate(
+			request.params.id,
+			{
+				customerName: customerName.trim(),
+				phone: typeof phone === 'string' ? phone.trim() : '',
+				email: typeof email === 'string' ? email.trim().toLowerCase() : '',
+				service: service.trim(),
+				receivedAt: parsedReceivedAt,
+				dueAt: parsedDueAt,
+				total: parsedTotal,
+				status,
+			},
+			{ new: true, runValidators: true },
+		)
+
+		if (!order) {
+			return response.status(404).json({ message: 'Order not found.' })
+		}
+
+		return response.json(order)
+	} catch (error) {
+		return next(error)
+	}
+})
+
+app.delete('/api/orders/:id', async (request, response, next) => {
+	try {
+		if (!mongoose.isValidObjectId(request.params.id)) {
+			return response.status(400).json({ message: 'Please provide a valid order ID.' })
+		}
+
+		const order = await Order.findByIdAndDelete(request.params.id)
+		if (!order) {
+			return response.status(404).json({ message: 'Order not found.' })
+		}
+
+		return response.json({ message: 'Order deleted.' })
+	} catch (error) {
+		return next(error)
+	}
+})
+
 app.post('/api/orders', async (request, response, next) => {
 	try {
 		const { customerName, phone = '', email = '', service, receivedAt, dueAt, total } =

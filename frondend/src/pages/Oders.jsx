@@ -21,6 +21,7 @@ function Orders({ searchTerm }) {
 	const [orders, setOrders] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [formOpen, setFormOpen] = useState(true)
+	const [editingOrder, setEditingOrder] = useState(null)
 	const [notice, setNotice] = useState('')
 	const [error, setError] = useState('')
 	const [statusFilter, setStatusFilter] = useState('All')
@@ -85,6 +86,64 @@ function Orders({ searchTerm }) {
 		}
 	}
 
+	async function updateOrder(orderDetails) {
+		const id = editingOrder?._id ?? editingOrder?.id ?? editingOrder?.orderId
+		if (!id) {
+			setError('This order cannot be edited because it has no valid ID.')
+			return
+		}
+
+		setError('')
+		setNotice('')
+		try {
+			const { data: updatedOrder } = await api.put(`/api/orders/${id}`, orderDetails)
+			setOrders((currentOrders) =>
+				currentOrders.map((order) =>
+					(order._id ?? order.id ?? order.orderId) === id ? updatedOrder : order,
+				),
+			)
+			setEditingOrder(null)
+			setFormOpen(false)
+			setNotice(`Order ${id} updated.`)
+		} catch (requestError) {
+			setError(
+				requestError.response?.data?.message ||
+					'Could not update the order. Check that the backend and MongoDB are running.',
+			)
+		}
+	}
+
+	async function deleteOrder(order) {
+		const id = order._id ?? order.id ?? order.orderId
+		if (!id) {
+			setError('This order cannot be deleted because it has no valid ID.')
+			return
+		}
+		if (!window.confirm(`Delete order ${id}? This cannot be undone.`)) return
+
+		setError('')
+		setNotice('')
+		try {
+			await api.delete(`/api/orders/${id}`)
+			setOrders((currentOrders) =>
+				currentOrders.filter(
+					(currentOrder) =>
+						(currentOrder._id ?? currentOrder.id ?? currentOrder.orderId) !== id,
+				),
+			)
+			if ((editingOrder?._id ?? editingOrder?.id ?? editingOrder?.orderId) === id) {
+				setEditingOrder(null)
+				setFormOpen(false)
+			}
+			setNotice(`Order ${id} deleted.`)
+		} catch (requestError) {
+			setError(
+				requestError.response?.data?.message ||
+					'Could not delete the order. Check that the backend and MongoDB are running.',
+			)
+		}
+	}
+
 	return (
 		<main className="min-w-0 flex-1 bg-slate-50 p-6 sm:p-8">
 			<div className="mx-auto max-w-7xl">
@@ -103,7 +162,13 @@ function Orders({ searchTerm }) {
 						type="button"
 						onClick={() => {
 							setNotice('')
-							setFormOpen((isOpen) => !isOpen)
+							if (formOpen) {
+								setFormOpen(false)
+								setEditingOrder(null)
+							} else {
+								setEditingOrder(null)
+								setFormOpen(true)
+							}
 						}}
 						aria-expanded={formOpen}
 					>
@@ -125,8 +190,13 @@ function Orders({ searchTerm }) {
 
 				{formOpen && (
 					<OrderForm
-						onSubmit={createOrder}
-						onCancel={() => setFormOpen(false)}
+						key={editingOrder?._id ?? editingOrder?.id ?? editingOrder?.orderId ?? 'new-order'}
+						initialOrder={editingOrder}
+						onSubmit={editingOrder ? updateOrder : createOrder}
+						onCancel={() => {
+							setFormOpen(false)
+							setEditingOrder(null)
+						}}
 					/>
 				)}
 
@@ -190,6 +260,13 @@ function Orders({ searchTerm }) {
 				) : (
 					<OrderTable
 						orders={visibleOrders}
+						onEdit={(order) => {
+							setError('')
+							setNotice('')
+							setEditingOrder(order)
+							setFormOpen(true)
+						}}
+						onDelete={deleteOrder}
 						emptyMessage={
 							searchTerm
 								? 'No orders match your search.'

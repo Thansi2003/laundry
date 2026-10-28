@@ -6,16 +6,23 @@ function getToday() {
 	return localDate.toISOString().slice(0, 10)
 }
 
-function OrderForm({ onSubmit, onCancel }) {
+function getDateInputValue(value, fallback = '') {
+	if (!value) return fallback
+	const date = new Date(value)
+	return Number.isNaN(date.getTime()) ? fallback : date.toISOString().slice(0, 10)
+}
+
+function OrderForm({ onSubmit, onCancel, initialOrder }) {
 	const [submitting, setSubmitting] = useState(false)
 	const [formData, setFormData] = useState({
-		customerName: '',
-		phone: '',
-		email: '',
-		service: '',
-		receivedAt: getToday(),
-		dueAt: '',
-		total: '',
+		customerName: initialOrder?.customerName ?? '',
+		phone: initialOrder?.phone ?? '',
+		email: initialOrder?.email ?? '',
+		service: initialOrder?.service ?? '',
+		receivedAt: getDateInputValue(initialOrder?.receivedAt, getToday()),
+		dueAt: getDateInputValue(initialOrder?.dueAt),
+		total: initialOrder?.total ?? '',
+		status: initialOrder?.status ?? 'Pending',
 	})
 
 	function handleChange(event) {
@@ -30,7 +37,6 @@ function OrderForm({ onSubmit, onCancel }) {
 			await onSubmit({
 				...formData,
 				total: Number(formData.total),
-				status: 'Pending',
 			})
 		} finally {
 			setSubmitting(false)
@@ -43,7 +49,9 @@ function OrderForm({ onSubmit, onCancel }) {
 			onSubmit={handleSubmit}
 		>
 			<div className="mb-5">
-				<h2 className="text-lg font-semibold text-slate-900">New laundry order</h2>
+				<h2 className="text-lg font-semibold text-slate-900">
+					{initialOrder ? 'Edit laundry order' : 'New laundry order'}
+				</h2>
 				<p className="mt-1 text-sm text-slate-500">
 					Enter the customer and pickup details to create an order.
 				</p>
@@ -143,6 +151,25 @@ function OrderForm({ onSubmit, onCancel }) {
 						required
 					/>
 				</label>
+
+				{initialOrder && (
+					<label className="block text-sm font-medium text-slate-700">
+						Status
+						<select
+							className="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 font-normal text-slate-900 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
+							name="status"
+							value={formData.status}
+							onChange={handleChange}
+							required
+						>
+							<option value="Pending">Pending</option>
+							<option value="In Progress">In Progress</option>
+							<option value="Ready">Ready</option>
+							<option value="Completed">Completed</option>
+							<option value="Cancelled">Cancelled</option>
+						</select>
+					</label>
+				)}
 			</div>
 
 			<div className="mt-6 flex flex-wrap justify-end gap-3">
@@ -159,7 +186,7 @@ function OrderForm({ onSubmit, onCancel }) {
 					type="submit"
 					disabled={submitting}
 				>
-					{submitting ? 'Saving order…' : 'Create order'}
+					{submitting ? 'Saving order…' : initialOrder ? 'Save changes' : 'Create order'}
 				</button>
 			</div>
 		</form>
