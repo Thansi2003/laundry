@@ -109,6 +109,12 @@ async function assignLegacyUsername(user, email) {
 
 app.post('/api/auth/register', async (request, response, next) => {
 	try {
+		if (!hasJwtSecret) {
+			return response.status(503).json({
+				message: 'Authentication is not configured. Set JWT_SECRET on the backend.',
+			})
+		}
+
 		const { name, email, password } = request.body
 		const username = normalizeUsername(request.body.username)
 		const normalizedEmail =

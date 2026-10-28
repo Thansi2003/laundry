@@ -14,7 +14,8 @@ allowed origins can be comma-separated.
 Set `JWT_SECRET` in Render to a private random value of at least 32 characters.
 Generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`,
 then add it as a Render environment variable before deploying the backend. Do not
-commit the secret. Sign-in issues an access token, and orders/customers are
+commit the secret. Registration and sign-in return a configuration error until
+the secret is set. Sign-in issues an access token, and orders/customers are
 stored separately per account. Existing records without an owner stay
 unassigned and are not exposed to newly registered accounts.
 
