@@ -2,14 +2,14 @@
 
 ## Deployment configuration
 
-The frontend uses `VITE_API_URL` as the backend origin. Set it in Vercel to the
-backend's public origin (for example, `https://your-backend.onrender.com`) and
-redeploy the frontend. Do not include `/api` in this value.
+The production frontend uses `https://laundry-1-j9ho.onrender.com` as its
+backend origin through `VITE_API_URL` in `.env.production`. In Vercel, set
+`VITE_API_URL` to the same value and redeploy. Do not include `/api`.
 
-Set `FRONTEND_URL` in the backend host to the frontend's public origin (for
-example, `https://your-app.vercel.app`). Multiple allowed origins can be
-comma-separated. The backend allows Vite's localhost ports by default for local
-development.
+The backend allows `https://laundry-6qy7.vercel.app` and Vite's localhost ports
+by default. Optionally set `FRONTEND_URL` in Render to
+`https://laundry-6qy7.vercel.app`; multiple allowed origins can be
+comma-separated.
 
 For local development, leave `VITE_API_URL` unset: Vite proxies `/api` requests
 to `http://localhost:5000`.
