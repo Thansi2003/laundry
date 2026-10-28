@@ -109,12 +109,32 @@ app.delete('/api/orders/:id', async (request, response, next) => {
 			return response.status(400).json({ message: 'Please provide a valid order ID.' })
 		}
 
-		const order = await Order.findByIdAndDelete(request.params.id)
+		const order = await Order.findById(request.params.id)
 		if (!order) {
 			return response.status(404).json({ message: 'Order not found.' })
 		}
 
-		return response.json({ message: 'Order deleted.' })
+		const customerIdentity = order.phone
+			? { phone: order.phone }
+			: order.email
+				? { email: order.email }
+				: { name: order.customerName, phone: '', email: '' }
+
+		await order.deleteOne()
+
+		const otherOrders = await Order.exists({
+			_id: { $ne: order._id },
+			...customerIdentity,
+		})
+		if (!otherOrders) {
+			await Customer.findOneAndDelete(customerIdentity)
+		}
+
+		return response.json({
+			message: otherOrders
+				? 'Order deleted. Customer kept because other orders still exist.'
+				: 'Order and customer deleted.',
+		})
 	} catch (error) {
 		return next(error)
 	}

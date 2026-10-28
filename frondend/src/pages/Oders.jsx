@@ -124,7 +124,7 @@ function Orders({ searchTerm }) {
 		setError('')
 		setNotice('')
 		try {
-			await api.delete(`/api/orders/${id}`)
+			const { data } = await api.delete(`/api/orders/${id}`)
 			setOrders((currentOrders) =>
 				currentOrders.filter(
 					(currentOrder) =>
@@ -135,7 +135,7 @@ function Orders({ searchTerm }) {
 				setEditingOrder(null)
 				setFormOpen(false)
 			}
-			setNotice(`Order ${id} deleted.`)
+			setNotice(data.message || `Order ${id} deleted.`)
 		} catch (requestError) {
 			setError(
 				requestError.response?.data?.message ||
