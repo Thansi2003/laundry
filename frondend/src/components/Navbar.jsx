@@ -1,19 +1,9 @@
-import { useState } from 'react'
-import { Menu, Shirt, X } from 'lucide-react'
-import { Link, NavLink } from 'react-router-dom'
+import { Shirt } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import './Navbar.css'
 
-const navigationItems = [
-	{ label: 'Dashboard', to: '/dashboard' },
-	{ label: 'Orders', to: '/orders' },
-	{ label: 'Customers', to: '/customers' },
-	{ label: 'Services', to: '/services' },
-]
-
 function Navbar({ searchTerm, onSearchChange }) {
-	const [menuOpen, setMenuOpen] = useState(false)
-
 	return (
 		<header className="site-header">
 			<Link className="brand" to="/dashboard" aria-label="Laundry dashboard">
@@ -31,34 +21,6 @@ function Navbar({ searchTerm, onSearchChange }) {
 					label="Search orders or customers"
 				/>
 			</div>
-
-			<button
-				className="menu-toggle"
-				type="button"
-				aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-				aria-expanded={menuOpen}
-				aria-controls="primary-navigation"
-				onClick={() => setMenuOpen((open) => !open)}
-			>
-				{menuOpen ? <X size={21} /> : <Menu size={21} />}
-			</button>
-
-			<nav
-				className={`primary-navigation${menuOpen ? ' is-open' : ''}`}
-				id="primary-navigation"
-				aria-label="Main navigation"
-			>
-				{navigationItems.map(({ label, to }) => (
-					<NavLink
-						className="navigation-link"
-						key={to}
-						to={to}
-						onClick={() => setMenuOpen(false)}
-					>
-						{label}
-					</NavLink>
-				))}
-			</nav>
 
 			<div className="header-profile">
 				<div className="profile-trigger">
