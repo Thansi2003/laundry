@@ -222,6 +222,7 @@
 .menu-toggle {
 	display: none;
 	width: 42px;
+	flex: 0 0 auto;
 	height: 42px;
 	align-items: center;
 	justify-content: center;
@@ -237,30 +238,35 @@
 	outline-offset: 2px;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1100px) {
 	.site-header {
 		min-height: 68px;
 		flex-wrap: wrap;
 		gap: 0 16px;
-		padding: 10px 20px;
+		padding: 10px clamp(16px, 4vw, 32px);
+	}
+
+	.brand {
+		order: 0;
 	}
 
 	.header-search {
-		order: 4;
+		order: 3;
 		width: 100%;
 		flex: 1 0 100%;
-		margin: 0;
+		max-width: none;
+		margin: 8px 0 0;
 		padding-bottom: 4px;
 	}
 
 	.menu-toggle {
 		display: inline-flex;
-		margin-left: auto;
+		order: 2;
 	}
 
 	.primary-navigation {
 		position: absolute;
-		top: calc(100% + 1px);
+		top: 100%;
 		right: 0;
 		left: 0;
 		display: none;
@@ -287,7 +293,8 @@
 	}
 
 	.header-profile {
-		gap: 8px;
+		order: 1;
+		margin-left: auto;
 		padding-left: 0;
 		border-left: 0;
 	}
@@ -299,6 +306,44 @@
 
 	.profile-role {
 		display: none;
+	}
+}
+
+@media (max-width: 480px) {
+	.site-header {
+		gap: 0 10px;
+		padding-right: 12px;
+		padding-left: 12px;
+	}
+
+	.brand {
+		gap: 7px;
+	}
+
+	.brand-mark {
+		width: 36px;
+		height: 36px;
+	}
+
+	.brand-name {
+		font-size: 21px;
+	}
+
+	.header-profile {
+		margin-left: auto;
+	}
+
+	.profile-trigger {
+		padding: 3px;
+	}
+
+	.profile-details {
+		display: none;
+	}
+
+	.primary-navigation {
+		padding-right: 12px;
+		padding-left: 12px;
 	}
 }
 

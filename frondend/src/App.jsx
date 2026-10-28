@@ -27,7 +27,7 @@ function AppLayout() {
       {!isAuthPage && (
         <Navbar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       )}
-      <div className="flex flex-1">
+      <div className="flex min-w-0 flex-1">
         {!isAuthPage && <Sidebar />}
         <Suspense fallback={<Loading />}>
           <Routes>

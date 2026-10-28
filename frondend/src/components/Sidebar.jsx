@@ -18,7 +18,7 @@ function Sidebar() {
 	const currentPath = pathname.replace(/\/+$/, '') || '/'
 
 	return (
-		<aside className="hidden min-h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-6 text-slate-700 md:flex">
+		<aside className="hidden min-h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-6 text-slate-700 min-[1101px]:flex">
 			<Link
 				className="mb-9 flex items-center gap-3 px-3 text-slate-900 no-underline"
 				to="/dashboard"
