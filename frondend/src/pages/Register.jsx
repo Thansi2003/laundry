@@ -41,10 +41,17 @@ function Register() {
 				state: { notice: 'Account created. You can now sign in.' },
 			})
 		} catch (requestError) {
-			setError(
-				requestError.response?.data?.message ||
-					'Could not create your account. Check the backend connection and try again.',
-			)
+			if (requestError.response?.status === 409) {
+				setError('An account with this email already exists. Sign in instead.')
+			} else if (requestError.response?.data?.message) {
+				setError(requestError.response.data.message)
+			} else if (requestError.code === 'ERR_NETWORK') {
+				setError(
+					'Could not reach the backend. Check your connection and the backend CORS configuration, then try again.',
+				)
+			} else {
+				setError(requestError.message || 'Could not create your account. Please try again.')
+			}
 		} finally {
 			setSubmitting(false)
 		}
