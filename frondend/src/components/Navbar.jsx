@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { LogOut, Menu, Shirt, X } from 'lucide-react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Menu, Shirt, X } from 'lucide-react'
+import { Link, NavLink } from 'react-router-dom'
 import SearchBar from './SearchBar'
-import { clearSavedUser, getSavedUser } from '../lib/session'
 import './Navbar.css'
 
 const navigationItems = [
@@ -14,16 +13,6 @@ const navigationItems = [
 
 function Navbar({ searchTerm, onSearchChange }) {
 	const [menuOpen, setMenuOpen] = useState(false)
-	const [profileOpen, setProfileOpen] = useState(false)
-	const [user, setUser] = useState(getSavedUser)
-	const navigate = useNavigate()
-
-	function handleLogout() {
-		clearSavedUser()
-		setUser(null)
-		setProfileOpen(false)
-		navigate('/login', { replace: true })
-	}
 
 	return (
 		<header className="site-header">
@@ -72,35 +61,15 @@ function Navbar({ searchTerm, onSearchChange }) {
 			</nav>
 
 			<div className="header-profile">
-				<button
-					className="profile-trigger"
-					type="button"
-					aria-label="Open profile menu"
-					aria-expanded={profileOpen}
-					aria-controls="profile-menu"
-					onClick={() => setProfileOpen((open) => !open)}
-				>
+				<div className="profile-trigger">
 					<span className="profile-avatar" aria-hidden="true">
-						{user?.name?.trim().charAt(0).toUpperCase() || '?'}
+						<Shirt size={17} aria-hidden="true" />
 					</span>
 					<span className="profile-details">
-						<span className="profile-name">{user?.name || 'Profile'}</span>
-						<span className="profile-role">Account</span>
+						<span className="profile-name">Shared workspace</span>
+						<span className="profile-role">No sign-in required</span>
 					</span>
-				</button>
-				{profileOpen && (
-					<div className="profile-menu" id="profile-menu">
-						<div className="profile-menu-details">
-							<span className="profile-menu-name">{user?.name || 'No saved profile'}</span>
-							{user?.username && <span className="profile-menu-email">@{user.username}</span>}
-							{user?.email && <span className="profile-menu-email">{user.email}</span>}
-						</div>
-						<button className="profile-logout" type="button" onClick={handleLogout}>
-							<LogOut size={17} aria-hidden="true" />
-							Log out
-						</button>
-					</div>
-				)}
+				</div>
 			</div>
 		</header>
 	)

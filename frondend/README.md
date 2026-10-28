@@ -11,13 +11,9 @@ The backend allows `https://laundry-6qy7.vercel.app`,
 Optionally set `FRONTEND_URL` in Render to the current frontend origin; multiple
 allowed origins can be comma-separated.
 
-Set `JWT_SECRET` in Render to a private random value of at least 32 characters.
-Generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`,
-then add it as a Render environment variable before deploying the backend. Do not
-commit the secret. Registration and sign-in return a configuration error until
-the secret is set. Sign-in issues an access token, and orders/customers are
-stored separately per account. Existing records without an owner stay
-unassigned and are not exposed to newly registered accounts.
+This deployment does not use sign-in or JWT authentication. All visitors share
+the same customer and order lists, and the API is public. Do not store sensitive
+or private information in this app.
 
 For local development, leave `VITE_API_URL` unset: Vite proxies `/api` requests
 to `http://localhost:5000`.

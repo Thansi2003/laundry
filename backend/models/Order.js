@@ -2,10 +2,6 @@ const mongoose = require('mongoose')
 
 const orderSchema = new mongoose.Schema(
 	{
-		userId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User',
-		},
 		customerName: {
 			type: String,
 			required: true,
@@ -48,7 +44,5 @@ const orderSchema = new mongoose.Schema(
 	},
 	{ timestamps: true },
 )
-
-orderSchema.index({ userId: 1, createdAt: -1 })
 
 module.exports = mongoose.models.Order || mongoose.model('Order', orderSchema)
