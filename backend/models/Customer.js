@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 
 const customerSchema = new mongoose.Schema(
 	{
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
+		},
 		name: {
 			type: String,
 			required: true,
@@ -21,5 +25,7 @@ const customerSchema = new mongoose.Schema(
 	},
 	{ timestamps: true },
 )
+
+customerSchema.index({ userId: 1, createdAt: -1 })
 
 module.exports = mongoose.models.Customer || mongoose.model('Customer', customerSchema)

@@ -4,7 +4,7 @@ import Sidebar from "./components/Sidebar"
 import Navbar from "./components/Navbar"
 import Loading from "./components/Loading"
 import Footer from "./components/Footer"
-import { getSavedUser } from "./lib/session"
+import { getSavedToken, getSavedUser } from "./lib/session"
 
 const Dashboard = lazy(() => import("./pages/Dashboard"))
 const Orders = lazy(() => import("./pages/Oders"))
@@ -14,7 +14,7 @@ const Login = lazy(() => import("./pages/Login"))
 const Register = lazy(() => import("./pages/Register"))
 
 function RequireAuth({ children }) {
-  return getSavedUser() ? children : <Navigate to="/login" replace />
+  return getSavedUser() && getSavedToken() ? children : <Navigate to="/login" replace />
 }
 
 function AppLayout() {

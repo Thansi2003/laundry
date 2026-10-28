@@ -92,6 +92,7 @@ function Navbar({ searchTerm, onSearchChange }) {
 					<div className="profile-menu" id="profile-menu">
 						<div className="profile-menu-details">
 							<span className="profile-menu-name">{user?.name || 'No saved profile'}</span>
+							{user?.username && <span className="profile-menu-email">@{user.username}</span>}
 							{user?.email && <span className="profile-menu-email">{user.email}</span>}
 						</div>
 						<button className="profile-logout" type="button" onClick={handleLogout}>

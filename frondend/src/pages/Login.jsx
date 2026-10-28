@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import api from '../lib/api'
-import { saveUser } from '../lib/session'
+import { saveSession } from '../lib/session'
 import { Eye, EyeOff, Shirt, Sparkles } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
@@ -26,7 +26,7 @@ function Login() {
 
 		try {
 			const { data } = await api.post('/api/auth/login', credentials)
-			saveUser(data.user)
+			saveSession(data.user, data.token)
 			navigate('/dashboard', { replace: true })
 		} catch (requestError) {
 			setError(
@@ -81,15 +81,15 @@ function Login() {
 
 						<form className="mt-8 space-y-5" onSubmit={handleSubmit}>
 							<label className="block text-sm font-medium text-slate-700">
-								Email address
+								Username or email
 								<input
 									className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-600 focus:ring-4 focus:ring-teal-100"
-									type="email"
+									type="text"
 									name="email"
 									value={credentials.email}
 									onChange={handleChange}
 									autoComplete="username"
-									placeholder="you@example.com"
+									placeholder="Username or email"
 									required
 								/>
 							</label>

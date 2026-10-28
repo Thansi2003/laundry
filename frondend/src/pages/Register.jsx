@@ -10,6 +10,7 @@ function Register() {
 	const [error, setError] = useState('')
 	const [formData, setFormData] = useState({
 		name: '',
+		username: '',
 		email: '',
 		password: '',
 		confirmPassword: '',
@@ -33,6 +34,7 @@ function Register() {
 		try {
 			await api.post('/api/auth/register', {
 				name: formData.name,
+				username: formData.username,
 				email: formData.email,
 				password: formData.password,
 			})
@@ -42,7 +44,7 @@ function Register() {
 			})
 		} catch (requestError) {
 			if (requestError.response?.status === 409) {
-				setError('An account with this email already exists. Sign in instead.')
+				setError(requestError.response?.data?.message || 'That email or username is already in use.')
 			} else if (requestError.response?.data?.message) {
 				setError(requestError.response.data.message)
 			} else if (requestError.code === 'ERR_NETWORK') {
@@ -124,6 +126,26 @@ function Register() {
 									placeholder="you@example.com"
 									required
 								/>
+							</label>
+
+							<label className="block text-sm font-medium text-slate-700">
+								Username
+								<input
+									className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-teal-600 focus:ring-4 focus:ring-teal-100"
+									type="text"
+									name="username"
+									value={formData.username}
+									onChange={handleChange}
+									autoComplete="username"
+									minLength={3}
+									maxLength={30}
+									pattern="[A-Za-z0-9_]{3,30}"
+									title="Use 3 to 30 letters, numbers, or underscores."
+									required
+								/>
+								<span className="mt-1 block text-xs font-normal text-slate-500">
+									Use 3 to 30 letters, numbers, or underscores.
+								</span>
 							</label>
 
 							<label className="block text-sm font-medium text-slate-700">

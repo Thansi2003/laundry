@@ -16,6 +16,13 @@ const userSchema = new mongoose.Schema(
 			unique: true,
 			maxlength: 254,
 		},
+		username: {
+			type: String,
+			trim: true,
+			lowercase: true,
+			minlength: 3,
+			maxlength: 30,
+		},
 		passwordHash: {
 			type: String,
 			required: true,
@@ -23,6 +30,14 @@ const userSchema = new mongoose.Schema(
 		},
 	},
 	{ timestamps: true },
+)
+
+userSchema.index(
+	{ username: 1 },
+	{
+		unique: true,
+		partialFilterExpression: { username: { $type: 'string' } },
+	},
 )
 
 module.exports = mongoose.models.User || mongoose.model('User', userSchema)
