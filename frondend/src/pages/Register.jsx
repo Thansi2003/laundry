@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../lib/api'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Shirt } from 'lucide-react'
 
@@ -31,7 +31,7 @@ function Register() {
 
 		setSubmitting(true)
 		try {
-			await axios.post('/api/auth/register', {
+			await api.post('/api/auth/register', {
 				name: formData.name,
 				email: formData.email,
 				password: formData.password,

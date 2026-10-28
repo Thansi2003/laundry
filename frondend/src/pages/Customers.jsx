@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import api from '../lib/api'
 import CustomerTable from '../components/CustomerTable'
 import Pagination from '../components/Pagination'
 
@@ -15,7 +15,7 @@ function Customers({ searchTerm }) {
 	useEffect(() => {
 		let active = true
 
-		axios
+		api
 			.get('/api/customers')
 			.then(({ data }) => {
 				if (active) setCustomers(data)

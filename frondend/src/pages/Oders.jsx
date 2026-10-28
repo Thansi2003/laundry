@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import api from '../lib/api'
 import { Plus, X } from 'lucide-react'
 import OrderForm from '../components/OrderForm'
 import OrderTable from '../components/OrderTable'
@@ -33,7 +33,7 @@ function Orders({ searchTerm }) {
 	useEffect(() => {
 		let active = true
 
-		axios
+		api
 			.get('/api/orders')
 			.then(({ data }) => {
 				if (active) setOrders(data)
@@ -73,7 +73,7 @@ function Orders({ searchTerm }) {
 		setError('')
 		setNotice('')
 		try {
-			const { data: order } = await axios.post('/api/orders', orderDetails)
+			const { data: order } = await api.post('/api/orders', orderDetails)
 			setOrders((currentOrders) => [order, ...currentOrders])
 			setFormOpen(false)
 			setNotice(`Order ${order._id} saved to MongoDB.`)

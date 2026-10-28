@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import api from '../lib/api'
 import {
 	ClipboardList,
 	IndianRupee,
@@ -18,8 +18,8 @@ function Dashboard() {
 		let active = true
 
 		Promise.allSettled([
-			axios.get('/api/orders'),
-			axios.get('/api/customers'),
+			api.get('/api/orders'),
+			api.get('/api/customers'),
 		]).then(([ordersResult, customersResult]) => {
 			if (!active) return
 

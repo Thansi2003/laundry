@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../lib/api'
 import { Eye, EyeOff, Shirt, Sparkles } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
@@ -24,7 +24,7 @@ function Login() {
 		setSubmitting(true)
 
 		try {
-			await axios.post('/api/auth/login', credentials)
+			await api.post('/api/auth/login', credentials)
 			navigate('/dashboard', { replace: true })
 		} catch (requestError) {
 			setError(

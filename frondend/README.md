@@ -1,5 +1,19 @@
 # React + Vite
 
+## Deployment configuration
+
+The frontend uses `VITE_API_URL` as the backend origin. Set it in Vercel to the
+backend's public origin (for example, `https://your-backend.onrender.com`) and
+redeploy the frontend. Do not include `/api` in this value.
+
+Set `FRONTEND_URL` in the backend host to the frontend's public origin (for
+example, `https://your-app.vercel.app`). Multiple allowed origins can be
+comma-separated. The backend allows Vite's localhost ports by default for local
+development.
+
+For local development, leave `VITE_API_URL` unset: Vite proxies `/api` requests
+to `http://localhost:5000`.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:
