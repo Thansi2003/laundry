@@ -2,7 +2,7 @@
 
 ## Deployment configuration
 
-The production frontend uses `https://laundry-3-okqj.onrender.com` as its
+The production frontend uses `https://laundry-4-g8tq.onrender.com` as its
 backend origin through `VITE_API_URL` in `.env.production`. In Vercel, set
 `VITE_API_URL` to the same value and redeploy. Do not include `/api`.
 
