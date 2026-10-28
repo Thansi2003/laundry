@@ -1,40 +1,12 @@
 import ServiceCard from '../components/ServiceCard'
+import services from '../lib/serviceCatalog'
 
-const services = [
-	{
-		name: 'Wash & Fold',
-		description: 'Everyday laundry washed, dried, and neatly folded.',
-		price: 1.75,
-		unit: 'lb',
-		featured: true,
-	},
-	{
-		name: 'Express Wash & Fold',
-		description: 'Priority wash-and-fold service for a faster turnaround.',
-		price: 2.5,
-		unit: 'lb',
-	},
-	{
-		name: 'Dry Cleaning',
-		description: 'Professional garment cleaning with careful finishing.',
-		price: 5,
-		unit: 'item',
-	},
-	{
-		name: 'Ironing',
-		description: 'Pressed and ready-to-wear garments, finished by the item.',
-		price: 2,
-		unit: 'item',
-	},
-	{
-		name: 'Bedding',
-		description: 'Fresh cleaning for bedding, comforters, and linens.',
-		price: 18,
-		unit: 'set',
-	},
-]
+function Services({ searchTerm = '' }) {
+	const searchQuery = searchTerm.trim().toLowerCase()
+	const filteredServices = services.filter((service) =>
+		`${service.name} ${service.description}`.toLowerCase().includes(searchQuery),
+	)
 
-function Services() {
 	return (
 		<main className="min-w-0 flex-1 bg-slate-50 p-6 sm:p-8">
 			<div className="mx-auto max-w-7xl">
@@ -44,7 +16,9 @@ function Services() {
 						Services &amp; prices
 					</h1>
 					<p className="mt-2 text-sm text-slate-500">
-						Explore laundry services and their starting prices.
+						{searchQuery
+							? `Services matching “${searchTerm.trim()}”.`
+							: 'Explore laundry services and their starting prices.'}
 					</p>
 				</div>
 
@@ -52,10 +26,15 @@ function Services() {
 					className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
 					aria-label="Laundry services and prices"
 				>
-					{services.map((service) => (
+					{filteredServices.map((service) => (
 						<ServiceCard key={service.name} {...service} />
 					))}
 				</section>
+				{filteredServices.length === 0 && (
+					<p className="mt-4 rounded-xl border border-slate-200 bg-white px-5 py-8 text-center text-sm text-slate-500">
+						No services match your search.
+					</p>
+				)}
 
 				<p className="mt-5 text-xs leading-5 text-slate-500">
 					Prices shown are starter rates in INR. Final prices may vary by garment,

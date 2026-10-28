@@ -32,7 +32,7 @@ function AppLayout() {
               path="/customers"
               element={<Customers searchTerm={searchTerm} />}
             />
-            <Route path="/services" element={<Services />} />
+            <Route path="/services" element={<Services searchTerm={searchTerm} />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </Suspense>
