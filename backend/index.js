@@ -16,6 +16,7 @@ const allowedOrigins = new Set(
 		'http://localhost:4173',
 		'https://laundry-6qy7.vercel.app',
 		'https://laundry-w1g7.vercel.app',
+		'https://laundry-1b1u.vercel.app',
 		...(process.env.FRONTEND_URL || '').split(','),
 	]
 		.map((origin) => origin.trim().replace(/\/+$/, ''))
