@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import api from '../lib/api'
+import { saveUser } from '../lib/session'
 import { Eye, EyeOff, Shirt, Sparkles } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
@@ -24,11 +25,13 @@ function Login() {
 		setSubmitting(true)
 
 		try {
-			await api.post('/api/auth/login', credentials)
+			const { data } = await api.post('/api/auth/login', credentials)
+			saveUser(data.user)
 			navigate('/dashboard', { replace: true })
 		} catch (requestError) {
 			setError(
 				requestError.response?.data?.message ||
+					requestError.message ||
 					'Could not sign in. Check that the backend is running and try again.',
 			)
 		} finally {

@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar"
 import Navbar from "./components/Navbar"
 import Loading from "./components/Loading"
 import Footer from "./components/Footer"
+import { getSavedUser } from "./lib/session"
 
 const Dashboard = lazy(() => import("./pages/Dashboard"))
 const Orders = lazy(() => import("./pages/Oders"))
@@ -11,6 +12,10 @@ const Customers = lazy(() => import("./pages/Customers"))
 const Services = lazy(() => import("./pages/Services"))
 const Login = lazy(() => import("./pages/Login"))
 const Register = lazy(() => import("./pages/Register"))
+
+function RequireAuth({ children }) {
+  return getSavedUser() ? children : <Navigate to="/login" replace />
+}
 
 function AppLayout() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -29,16 +34,16 @@ function AppLayout() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
             <Route
               path="/orders"
-              element={<Orders searchTerm={searchTerm} />}
+              element={<RequireAuth><Orders searchTerm={searchTerm} /></RequireAuth>}
             />
             <Route
               path="/customers"
-              element={<Customers searchTerm={searchTerm} />}
+              element={<RequireAuth><Customers searchTerm={searchTerm} /></RequireAuth>}
             />
-            <Route path="/services" element={<Services />} />
+            <Route path="/services" element={<RequireAuth><Services /></RequireAuth>} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </Suspense>
