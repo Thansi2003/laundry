@@ -14,6 +14,12 @@ const app = express()
 const port = Number(process.env.PORT) || 5000
 const mongoUri =
 	process.env.MONGODB_URI
+const sessionSecret = process.env.SESSION_SECRET
+
+if (typeof sessionSecret !== 'string' || sessionSecret.length < 32) {
+	throw new Error('SESSION_SECRET must contain at least 32 characters.')
+}
+
 const allowedOrigins = new Set(
 	[
 		'http://localhost:5173',
@@ -40,7 +46,7 @@ app.set('trust proxy', 1)
 app.use(
 	session({
 		name: 'laundry.sid',
-		secret: process.env.SESSION_SECRET || '',
+		secret: sessionSecret,
 		resave: false,
 		saveUninitialized: false,
 		store: MongoStore.create({
@@ -279,12 +285,6 @@ async function startServer() {
 	try {
 		if (typeof mongoUri !== 'string' || !mongoUri.trim()) {
 			throw new Error('MONGODB_URI is not configured.')
-		}
-		if (
-			typeof process.env.SESSION_SECRET !== 'string' ||
-			process.env.SESSION_SECRET.length < 32
-		) {
-			throw new Error('SESSION_SECRET must contain at least 32 characters.')
 		}
 		await mongoose.connect(mongoUri)
 		app.listen(port, () => {
