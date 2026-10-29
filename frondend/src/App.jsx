@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar"
 import Navbar from "./components/Navbar"
 import Loading from "./components/Loading"
 import Footer from "./components/Footer"
+import AuthPage from "./pages/AuthPage"
 
 const Dashboard = lazy(() => import("./pages/Dashboard"))
 const Orders = lazy(() => import("./pages/Oders"))
@@ -30,8 +31,6 @@ function AppLayout() {
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/login" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/register" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route
               path="/orders"
@@ -54,7 +53,11 @@ function AppLayout() {
 function App() {
   return (
     <BrowserRouter>
-      <AppLayout />
+      <Routes>
+        <Route path="/login" element={<AuthPage mode="login" />} />
+        <Route path="/register" element={<AuthPage mode="register" />} />
+        <Route path="/*" element={<AppLayout />} />
+      </Routes>
     </BrowserRouter>
   )
 }
