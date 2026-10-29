@@ -8,8 +8,6 @@ function Navbar({
 	onSearchChange,
 	onMenuClick,
 	isMenuOpen,
-	userName,
-	onSignOut,
 }) {
 	return (
 		<header className="site-header">
@@ -45,17 +43,10 @@ function Navbar({
 						<Shirt size={17} aria-hidden="true" />
 					</span>
 					<span className="profile-details">
-						<span className="profile-name">{userName}</span>
-						<span className="profile-role">Signed in</span>
+						<span className="profile-name">Shared workspace</span>
+						<span className="profile-role">No sign-in required</span>
 					</span>
 				</div>
-				<button
-					className="ml-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-					type="button"
-					onClick={onSignOut}
-				>
-					Sign out
-				</button>
 			</div>
 		</header>
 	)
