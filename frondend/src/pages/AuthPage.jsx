@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ArrowRight, Shirt } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
+import api from '../lib/api'
 
 function AuthPage({ mode }) {
 	const isRegister = mode === 'register'
@@ -8,8 +9,9 @@ function AuthPage({ mode }) {
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [error, setError] = useState('')
+	const [isSubmitting, setIsSubmitting] = useState(false)
 
-	function handleSubmit(event) {
+	async function handleSubmit(event) {
 		event.preventDefault()
 
 		if (isRegister && password !== confirmPassword) {
@@ -17,7 +19,25 @@ function AuthPage({ mode }) {
 			return
 		}
 
-		navigate('/dashboard', { replace: true })
+		const formData = new FormData(event.currentTarget)
+		setIsSubmitting(true)
+		setError('')
+
+		try {
+			await api.post(`/api/auth/${isRegister ? 'register' : 'login'}`, {
+				name: formData.get('name'),
+				email: formData.get('email'),
+				password,
+			})
+			navigate('/dashboard', { replace: true })
+		} catch (requestError) {
+			setError(
+				requestError.response?.data?.message ??
+					'Could not connect to the server. Please try again.',
+			)
+		} finally {
+			setIsSubmitting(false)
+		}
 	}
 
 	return (
@@ -46,8 +66,8 @@ function AuthPage({ mode }) {
 						</h1>
 						<p className="mt-2 text-sm leading-6 text-slate-500">
 							{isRegister
-								? 'Enter your details to continue to the laundry dashboard.'
-								: 'Enter any email and password to continue to the demo.'}
+								? 'Create an account to manage your laundry business.'
+								: 'Sign in to manage your laundry business.'}
 						</p>
 					</div>
 
@@ -109,7 +129,7 @@ function AuthPage({ mode }) {
 									setError('')
 								}}
 								required
-								minLength={6}
+								minLength={8}
 							/>
 						</div>
 
@@ -134,7 +154,7 @@ function AuthPage({ mode }) {
 										setError('')
 									}}
 									required
-									minLength={6}
+									minLength={8}
 								/>
 							</div>
 						)}
@@ -148,9 +168,14 @@ function AuthPage({ mode }) {
 						<button
 							className="flex w-full items-center justify-center gap-2 rounded-lg bg-teal-700 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
 							type="submit"
+							disabled={isSubmitting}
 						>
-							{isRegister ? 'Continue to dashboard' : 'Sign in to demo'}
-							<ArrowRight size={17} aria-hidden="true" />
+							{isSubmitting
+								? 'Please wait…'
+								: isRegister
+									? 'Create account'
+									: 'Sign in'}
+							{!isSubmitting && <ArrowRight size={17} aria-hidden="true" />}
 						</button>
 					</form>
 
@@ -166,7 +191,7 @@ function AuthPage({ mode }) {
 				</section>
 
 				<p className="mt-5 text-center text-xs leading-5 text-slate-500">
-					Demo mode: details are not saved and no password or token is created.
+					Passwords are securely hashed. Sign-in uses a server session cookie, not a JWT.
 				</p>
 			</div>
 		</main>
