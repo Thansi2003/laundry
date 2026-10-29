@@ -22,6 +22,28 @@
 	text-decoration: none;
 }
 
+.mobile-menu-button {
+	width: 40px;
+	height: 40px;
+	flex: 0 0 auto;
+	border: 1px solid #e8edf2;
+	border-radius: 10px;
+	background: #fff;
+	color: #526174;
+	cursor: pointer;
+}
+
+.mobile-menu-button:hover,
+.mobile-menu-button:focus-visible {
+	background: #f1f8f9;
+	color: #087e8b;
+}
+
+.mobile-menu-button:focus-visible {
+	outline: 3px solid #8bd1d7;
+	outline-offset: 2px;
+}
+
 .brand-mark {
 	display: grid;
 	width: 40px;

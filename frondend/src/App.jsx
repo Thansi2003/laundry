@@ -12,12 +12,21 @@ const Services = lazy(() => import("./pages/Services"))
 
 function AppLayout() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <Navbar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        onMenuClick={() => setIsSidebarOpen(true)}
+        isMenuOpen={isSidebarOpen}
+      />
       <div className="flex min-w-0 flex-1">
-        <Sidebar />
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
